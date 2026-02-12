@@ -1,0 +1,115 @@
+<!-- Toolbar -->
+<mat-toolbar color="primary" class="toolbar">
+  <span class="toolbar-title">
+    <mat-icon>account_balance</mat-icon>
+    Money Transfer System
+  </span>
+  <span class="spacer"></span>
+  <span class="username">{{ username }}</span>
+  <button mat-icon-button (click)="logout()" matTooltip="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Main Content -->
+<div class="dashboard-container">
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading account details...</p>
+  </div>
+
+  <!-- Error Message -->
+  <mat-card *ngIf="error && !loading" class="error-card">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      Retry
+    </button>
+  </mat-card>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="account && !loading" class="dashboard-content">
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>Welcome, {{ account.holderName }}! 👋</h1>
+      <p>Account ID: #{{ account.id }}</p>
+    </div>
+
+    <!-- Balance Card -->
+    <mat-card class="balance-card">
+      <mat-card-header>
+        <div class="card-header">
+          <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
+          <h2>Available Balance</h2>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="balance-amount">
+          <span class="currency">₹</span>
+          <span class="amount">{{ account.balance | number:'1.2-2' }}</span>
+        </div>
+        <div class="account-status" [class.active]="account.status === 'ACTIVE'">
+          <mat-icon>{{ account.status === 'ACTIVE' ? 'check_circle' : 'cancel' }}</mat-icon>
+          Account Status: {{ account.status }}
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button (click)="refresh()" matTooltip="Refresh balance">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Action Cards -->
+    <div class="action-cards">
+
+      <!-- Transfer Money Card -->
+      <mat-card class="action-card transfer-card" (click)="goToTransfer()">
+        <div class="action-icon-container">
+          <mat-icon class="action-icon">send</mat-icon>
+        </div>
+        <h3>Transfer Money</h3>
+        <p>Send money to another account</p>
+      </mat-card>
+
+      <!-- Transaction History Card -->
+      <mat-card class="action-card history-card" (click)="goToHistory()">
+        <div class="action-icon-container">
+          <mat-icon class="action-icon">history</mat-icon>
+        </div>
+        <h3>Transaction History</h3>
+        <p>View your past transactions</p>
+      </mat-card>
+
+      <!-- Profile Card -->
+      <mat-card class="action-card profile-card">
+        <div class="action-icon-container">
+          <mat-icon class="action-icon">person</mat-icon>
+        </div>
+        <h3>Profile</h3>
+        <p>Manage your account</p>
+      </mat-card>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button mat-raised-button color="primary" (click)="goToTransfer()">
+        <mat-icon>send</mat-icon>
+        New Transfer
+      </button>
+      <button mat-raised-button (click)="goToHistory()">
+        <mat-icon>list</mat-icon>
+        View History
+      </button>
+      <button mat-raised-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+
+  </div>
+</div>

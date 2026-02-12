@@ -3,6 +3,7 @@ package com.moneytransfer.domain.entity;
 import com.moneytransfer.domain.enums.AccountStatus;
 import com.moneytransfer.exception.AccountNotActiveException;
 import com.moneytransfer.exception.InsufficientBalanceException;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,66 +13,71 @@ import java.time.LocalDateTime;
 
 /**
  * Represents a bank account in the money transfer system
- * This is the core domain entity that holds account information and balance
  */
-@Data  // Lombok: Auto-generates getters, setters, toString, equals, hashCode
-@NoArgsConstructor  // Lombok: Generates no-argument constructor
-@AllArgsConstructor  // Lombok: Generates constructor with all fields
+@Entity  // JPA: This class maps to a database table
+@Table(name = "accounts")  // JPA: Table name in database
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
 
+    @Id  // JPA: Primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // JPA: Auto-increment
     private Long id;
+
+    @Column(name = "holder_name", nullable = false)  // JPA: Column mapping
     private String holderName;
+
+    @Column(nullable = false, precision = 18, scale = 2)  // JPA: Decimal precision
     private BigDecimal balance;
+
+    @Enumerated(EnumType.STRING)  // JPA: Store enum as string in DB
+    @Column(nullable = false, length = 20)
     private AccountStatus status;
+
+    @Version  // JPA: Optimistic locking - prevents concurrent updates
     private Integer version;
+
+    @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
     /**
-     * Deduct money from the account (withdrawal)
-     *
-     * @param amount Amount to deduct
-     * @throws AccountNotActiveException if account is not ACTIVE
-     * @throws InsufficientBalanceException if balance is insufficient
+     * Automatically set lastUpdated before persisting or updating
+     */
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    /**
+     * Deduct money from the account
      */
     public void debit(BigDecimal amount) {
-        // Business Rule: Account must be active
         if (!isActive()) {
             throw new AccountNotActiveException("Cannot debit from account " + id + ". Account status: " + status);
         }
 
-        // Business Rule: Must have sufficient balance
         if (balance.compareTo(amount) < 0) {
             throw new InsufficientBalanceException("Insufficient balance. Available: " + balance + ", Required: " + amount);
         }
 
-        // Deduct the amount
         this.balance = this.balance.subtract(amount);
-        this.lastUpdated = LocalDateTime.now();
     }
 
     /**
-     * Add money to the account (deposit)
-     *
-     * @param amount Amount to add
-     * @throws AccountNotActiveException if account is not ACTIVE
+     * Add money to the account
      */
     public void credit(BigDecimal amount) {
-        // Business Rule: Account must be active
         if (!isActive()) {
-            throw new AccountNotActiveException(
-                    "Cannot credit to account " + id + ". Account status: " + status
-            );
+            throw new AccountNotActiveException("Cannot credit to account " + id + ". Account status: " + status);
         }
 
-        // Add the amount
         this.balance = this.balance.add(amount);
-        this.lastUpdated = LocalDateTime.now();
     }
 
     /**
      * Check if account is active
-     *
-     * @return true if account status is ACTIVE
      */
     public boolean isActive() {
         return AccountStatus.ACTIVE.equals(this.status);

@@ -1,0 +1,100 @@
+<!-- Toolbar -->
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>Transaction History</span>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="refresh()" matTooltip="Refresh">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Main Content -->
+<div class="history-container">
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading transactions...</p>
+  </div>
+
+  <!-- Error Message -->
+  <mat-card *ngIf="error && !loading" class="error-card">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      Retry
+    </button>
+  </mat-card>
+
+  <!-- Transaction History -->
+  <div *ngIf="!loading && !error" class="history-content">
+
+    <!-- Header -->
+    <div class="header-section">
+      <h2>
+        <mat-icon>history</mat-icon>
+        Your Transactions
+      </h2>
+      <p>Total Transactions: {{ transactions.length }}</p>
+    </div>
+
+    <!-- No Transactions -->
+    <mat-card *ngIf="transactions.length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <h3>No Transactions Yet</h3>
+      <p>Your transaction history will appear here</p>
+      <button mat-raised-button color="primary" routerLink="/transfer">
+        Make Your First Transfer
+      </button>
+    </mat-card>
+
+    <!-- Transaction List -->
+    <div *ngIf="transactions.length > 0" class="transaction-list">
+      <mat-card *ngFor="let transaction of transactions" class="transaction-card">
+
+        <div class="transaction-header">
+          <div class="transaction-icon" [class.sent]="getTransactionType(transaction) === 'SENT'"
+               [class.received]="getTransactionType(transaction) === 'RECEIVED'">
+            <mat-icon>{{ getTransactionType(transaction) === 'SENT' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          </div>
+
+          <div class="transaction-info">
+            <h3>
+              {{ getTransactionType(transaction) === 'SENT' ? 'Sent to' : 'Received from' }}
+              Account #{{ getOtherAccountId(transaction) }}
+            </h3>
+            <p class="transaction-date">{{ formatDate(transaction.createdOn) }}</p>
+          </div>
+
+          <div class="transaction-amount" [ngClass]="getAmountClass(transaction)">
+            {{ getFormattedAmount(transaction) }}
+          </div>
+        </div>
+
+        <div class="transaction-details">
+          <div class="detail-item">
+            <span class="detail-label">Transaction ID:</span>
+            <span class="detail-value">{{ transaction.id.substring(0, 8) }}...</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Status:</span>
+            <mat-chip [class.success-chip]="transaction.status === 'SUCCESS'"
+                      [class.failed-chip]="transaction.status === 'FAILED'">
+              {{ transaction.status }}
+            </mat-chip>
+          </div>
+
+          <div *ngIf="transaction.failureReason" class="detail-item failure-reason">
+            <span class="detail-label">Failure Reason:</span>
+            <span class="detail-value error-text">{{ transaction.failureReason }}</span>
+          </div>
+        </div>
+
+      </mat-card>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<!-- Toolbar -->
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>Transfer Money</span>
+</mat-toolbar>
+
+<!-- Main Content -->
+<div class="transfer-container">
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loadingAccount" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Transfer Form -->
+  <div *ngIf="!loadingAccount && fromAccount" class="transfer-content">
+
+    <!-- From Account Card -->
+    <mat-card class="account-card from-account">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="account-icon">account_circle</mat-icon>
+        <mat-card-title>From Account</mat-card-title>
+        <mat-card-subtitle>{{ fromAccount.holderName }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="account-details">
+          <div class="detail-row">
+            <span class="label">Account ID:</span>
+            <span class="value">#{{ fromAccount.id }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Available Balance:</span>
+            <span class="value balance">₹{{ fromAccount.balance | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Transfer Arrow -->
+    <div class="transfer-arrow">
+      <mat-icon>arrow_downward</mat-icon>
+    </div>
+
+    <!-- Transfer Form Card -->
+    <mat-card class="transfer-form-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="form-icon">send</mat-icon>
+        <mat-card-title>Transfer Details</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form (ngSubmit)="onTransfer()" #transferForm="ngForm">
+
+          <!-- Destination Account Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>To Account ID</mat-label>
+            <input
+              matInput
+              type="number"
+              [(ngModel)]="toAccountId"
+              name="toAccountId"
+              required
+              placeholder="Enter destination account ID"
+              [disabled]="loading">
+            <mat-icon matPrefix>account_balance</mat-icon>
+          </mat-form-field>
+
+          <!-- Amount Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Amount</mat-label>
+            <input
+              matInput
+              type="number"
+              step="0.01"
+              [(ngModel)]="amount"
+              name="amount"
+              required
+              min="0.01"
+              [max]="fromAccount.balance"
+              placeholder="Enter amount"
+              [disabled]="loading">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-icon matSuffix>payments</mat-icon>
+          </mat-form-field>
+
+          <!-- Notes Field (Optional) -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes (Optional)</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="notes"
+              name="notes"
+              rows="3"
+              placeholder="Add a note for this transfer"
+              [disabled]="loading"></textarea>
+            <mat-icon matPrefix>note</mat-icon>
+          </mat-form-field>
+
+          <!-- Action Buttons -->
+          <div class="button-group">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="loading || !transferForm.valid">
+              <mat-icon>send</mat-icon>
+              <span *ngIf="!loading">Transfer Now</span>
+              <span *ngIf="loading">Processing...</span>
+            </button>
+
+            <button
+              mat-raised-button
+              type="button"
+              (click)="cancel()"
+              [disabled]="loading">
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Information Card -->
+    <mat-card class="info-card">
+      <mat-card-content>
+        <h3>
+          <mat-icon>info</mat-icon>
+          Important Information
+        </h3>
+        <ul>
+          <li>Transfers are processed instantly</li>
+          <li>Both accounts must be active</li>
+          <li>Ensure sufficient balance before transfer</li>
+          <li>Double-check the destination account ID</li>
+          <li>All transactions are logged and tracked</li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

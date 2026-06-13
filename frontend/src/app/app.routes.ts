@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TransferComponent } from './components/transfer/transfer.component';
 import { HistoryComponent } from './components/history/history.component';
+import { RewardsComponent } from './components/rewards/rewards.component';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
@@ -47,6 +48,11 @@ export const routes: Routes = [
   {
     path: 'history',
     component: HistoryComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'rewards',
+    component: RewardsComponent,
     canActivate: [authGuard]
   },
 

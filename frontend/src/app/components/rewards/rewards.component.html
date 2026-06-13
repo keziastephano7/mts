@@ -1,0 +1,161 @@
+<!-- Toolbar -->
+<mat-toolbar color="primary" class="toolbar">
+  <span class="toolbar-title">
+    <mat-icon>card_giftcard</mat-icon>
+    Reward Points
+  </span>
+  <span class="spacer"></span>
+  <span class="username">{{ username }}</span>
+  <button mat-icon-button (click)="logout()" matTooltip="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Main Content -->
+<div class="rewards-container">
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading reward information...</p>
+  </div>
+
+  <!-- Error Message -->
+  <mat-card *ngIf="error && !loading" class="error-card">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      Retry
+    </button>
+  </mat-card>
+
+  <!-- Rewards Content -->
+  <div *ngIf="rewardBalance && !loading" class="rewards-content">
+
+    <!-- Reward Points Card -->
+    <mat-card class="reward-points-card">
+      <mat-card-header>
+        <div class="card-header">
+          <mat-icon class="reward-icon">card_giftcard</mat-icon>
+          <h2>Reward Points Balance</h2>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="points-amount">
+          <span class="points">{{ rewardBalance.pointsBalance }}</span>
+          <span class="label">points</span>
+        </div>
+        <div class="reward-info">
+          <p>💡 Earn 1 point for every ₹100 transferred</p>
+          <p>✨ Make transfers and watch your rewards grow!</p>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button (click)="refresh()" matTooltip="Refresh points">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Reward History Section -->
+    <mat-card class="reward-history-card">
+      <mat-card-header>
+        <div class="card-header">
+          <mat-icon class="history-icon">history</mat-icon>
+          <h2>Reward History</h2>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-container" *ngIf="rewardHistory.length > 0; else noHistory">
+          <table mat-table [dataSource]="rewardHistory" class="reward-table">
+            
+            <!-- Transaction ID Column -->
+            <ng-container matColumnDef="transactionId">
+              <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
+              <td mat-cell *matCellDef="let element" class="transaction-id">
+                {{ element.transactionId }}
+              </td>
+            </ng-container>
+
+            <!-- Points Granted Column -->
+            <ng-container matColumnDef="pointsGranted">
+              <th mat-header-cell *matHeaderCellDef>Points</th>
+              <td mat-cell *matCellDef="let element" class="points-granted">
+                <span class="badge">+{{ element.pointsGranted }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Granted On Column -->
+            <ng-container matColumnDef="grantedOn">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let element" class="granted-on">
+                {{ formatDate(element.grantedOn) }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <!-- No History Message -->
+        <ng-template #noHistory>
+          <div class="no-history">
+            <mat-icon>inbox</mat-icon>
+            <p>No reward history yet</p>
+            <p class="hint">Complete eligible transfers to earn reward points!</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quick Info Card -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <h3>How Rewards Work</h3>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-list">
+          <div class="info-item">
+            <mat-icon>check_circle</mat-icon>
+            <div>
+              <strong>Earn Points</strong>
+              <p>Transfer ₹100 or more to earn 1 point per ₹100</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>check_circle</mat-icon>
+            <div>
+              <strong>Successful Transfers Only</strong>
+              <p>Only completed transfers qualify for rewards</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>check_circle</mat-icon>
+            <div>
+              <strong>Track Your Rewards</strong>
+              <p>View your complete reward history on this page</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <button mat-raised-button (click)="goToDashboard()">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </button>
+      <button mat-raised-button color="primary" (click)="goToTransfer()">
+        <mat-icon>send</mat-icon>
+        New Transfer
+      </button>
+      <button mat-raised-button (click)="goToHistory()">
+        <mat-icon>list</mat-icon>
+        All Transactions
+      </button>
+    </div>
+
+  </div>
+</div>

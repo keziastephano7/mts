@@ -91,6 +91,13 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
+   * Navigate to rewards page
+   */
+  goToRewards(): void {
+    this.router.navigate(['/rewards']);
+  }
+
+  /**
    * Logout
    */
   logout(): void {

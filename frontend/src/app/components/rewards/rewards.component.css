@@ -1,0 +1,304 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.username {
+  margin-right: 20px;
+  font-size: 0.95rem;
+}
+
+.rewards-container {
+  padding: 30px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+}
+
+.loading-container p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.error-card {
+  background-color: #ffebee;
+  border-left: 4px solid #d32f2f;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.error-card mat-icon {
+  color: #d32f2f;
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.error-card p {
+  margin: 0;
+  color: #d32f2f;
+}
+
+.rewards-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.reward-points-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.reward-points-card mat-card-header {
+  color: white;
+}
+
+.reward-points-card mat-card-header .card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.reward-points-card .reward-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.reward-points-card h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.points-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.points-amount .points {
+  font-size: 4rem;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+
+.points-amount .label {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.reward-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.reward-info p {
+  margin: 10px 0;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.reward-history-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reward-history-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.reward-history-card .history-icon {
+  color: #1976d2;
+}
+
+.reward-history-card h2 {
+  margin: 0;
+  color: #333;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.reward-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reward-table th {
+  background-color: #f5f5f5;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.reward-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.reward-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.transaction-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.points-granted .badge {
+  background-color: #4caf50;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.granted-on {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.no-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #999;
+  text-align: center;
+}
+
+.no-history mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: #ddd;
+  margin-bottom: 15px;
+}
+
+.no-history p {
+  margin: 5px 0;
+}
+
+.no-history .hint {
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+.info-card {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+}
+
+.info-card h3 {
+  color: #2e7d32;
+  margin: 0;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.info-item {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.info-item mat-icon {
+  color: #4caf50;
+  flex-shrink: 0;
+}
+
+.info-item strong {
+  display: block;
+  color: #2e7d32;
+  margin-bottom: 5px;
+}
+
+.info-item p {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.navigation-buttons button {
+  min-width: 150px;
+}
+
+@media (max-width: 768px) {
+  .rewards-container {
+    padding: 20px 10px;
+  }
+
+  .points-amount .points {
+    font-size: 2.5rem;
+  }
+
+  .reward-table th,
+  .reward-table td {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  .transaction-id {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+  }
+
+  .navigation-buttons button {
+    width: 100%;
+  }
+}

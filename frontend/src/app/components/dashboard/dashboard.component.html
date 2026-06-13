@@ -84,6 +84,15 @@
         <p>View your past transactions</p>
       </mat-card>
 
+      <!-- Rewards Card -->
+      <mat-card class="action-card rewards-card" (click)="goToRewards()">
+        <div class="action-icon-container">
+          <mat-icon class="action-icon">card_giftcard</mat-icon>
+        </div>
+        <h3>Reward Points</h3>
+        <p>Track your earned rewards</p>
+      </mat-card>
+
       <!-- Profile Card -->
       <mat-card class="action-card profile-card">
         <div class="action-icon-container">
@@ -104,6 +113,10 @@
       <button mat-raised-button (click)="goToHistory()">
         <mat-icon>list</mat-icon>
         View History
+      </button>
+      <button mat-raised-button (click)="goToRewards()">
+        <mat-icon>card_giftcard</mat-icon>
+        View Rewards
       </button>
       <button mat-raised-button (click)="logout()">
         <mat-icon>logout</mat-icon>

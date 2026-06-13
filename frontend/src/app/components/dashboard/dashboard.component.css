@@ -167,6 +167,10 @@
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
+.rewards-card .action-icon-container {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+}
+
 .profile-card .action-icon-container {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }

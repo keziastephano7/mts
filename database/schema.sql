@@ -35,3 +35,32 @@ CREATE INDEX idx_from_account ON transaction_logs(from_account_id);
 CREATE INDEX idx_to_account ON transaction_logs(to_account_id);
 CREATE INDEX idx_idempotency ON transaction_logs(idempotency_key);
 CREATE INDEX idx_created_on ON transaction_logs(created_on);
+
+-- REWARDS Table
+-- Stores current reward points balance for each account
+CREATE TABLE rewards (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         account_id BIGINT NOT NULL UNIQUE,
+                         points_balance BIGINT DEFAULT 0,
+                         last_updated TIMESTAMP,
+                         CONSTRAINT fk_reward_account FOREIGN KEY (account_id) REFERENCES accounts(id),
+                         CONSTRAINT chk_points CHECK (points_balance >= 0)
+);
+
+-- REWARD_HISTORY Table
+-- Audit trail of all reward grants with associated transactions
+CREATE TABLE reward_history (
+                                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                account_id BIGINT NOT NULL,
+                                transaction_id VARCHAR(36) NOT NULL,
+                                points_granted BIGINT NOT NULL,
+                                granted_on TIMESTAMP NOT NULL,
+                                CONSTRAINT fk_reward_history_account FOREIGN KEY (account_id) REFERENCES accounts(id),
+                                CONSTRAINT fk_reward_history_transaction FOREIGN KEY (transaction_id) REFERENCES transaction_logs(id)
+);
+
+-- Indexes for reward queries
+CREATE INDEX idx_reward_account ON rewards(account_id);
+CREATE INDEX idx_reward_history_account ON reward_history(account_id);
+CREATE INDEX idx_reward_history_transaction ON reward_history(transaction_id);
+CREATE INDEX idx_reward_history_granted_on ON reward_history(granted_on);

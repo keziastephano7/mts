@@ -22,6 +22,7 @@ public class TransferService {
     // Spring automatically injects these dependencies
     private final AccountRepository accountRepository;
     private final TransactionLogRepository transactionLogRepository;
+    private final RewardService rewardService;
 
     @Transactional
     public TransferResponse transfer(TransferRequest request) {
@@ -40,7 +41,10 @@ public class TransferService {
             // Step 3: Execute the transfer
             TransactionLog transaction = executeTransfer(request);
 
-            // Step 4: Return success response
+            // Step 4: Grant reward points to sender (if eligible)
+            rewardService.grantReward(transaction);
+
+            // Step 5: Return success response
             return TransferResponse.builder()
                     .transactionId(java.util.UUID.fromString(transaction.getId()))
                     .status("SUCCESS")

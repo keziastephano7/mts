@@ -1,37 +1,41 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../services/auth.service';
 import { AccountService } from '../../services/account.service';
+import { RewardService } from '../../services/reward.service';
 import { Account } from '../../models/account.model';
+import { RewardBalance } from '../../models/reward-balance.model';
 
 /**
- * Dashboard Component
- * Shows account overview and navigation
+ * Profile Component
+ * Displays user profile with account details, balance, and rewards
  */
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-profile',
   standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
+    MatToolbarModule,
     MatProgressSpinnerModule,
-    MatToolbarModule
+    RouterLink
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css'
 })
-export class DashboardComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   account: Account | null = null;
+  rewardBalance: RewardBalance | null = null;
   loading: boolean = true;
   error: string = '';
   username: string = '';
@@ -39,6 +43,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
+    private rewardService: RewardService,
     private router: Router
   ) {}
 
@@ -46,14 +51,14 @@ export class DashboardComponent implements OnInit {
     // Get username
     this.username = this.authService.getUsername() || 'User';
 
-    // Load account data
-    this.loadAccount();
+    // Load profile data
+    this.loadProfileData();
   }
 
   /**
-   * Load account details
+   * Load account and reward data
    */
-  loadAccount(): void {
+  loadProfileData(): void {
     const accountId = this.authService.getCurrentAccountId();
 
     if (!accountId) {
@@ -63,10 +68,14 @@ export class DashboardComponent implements OnInit {
     }
 
     this.loading = true;
+    this.error = '';
+
+    // Load account details
     this.accountService.getAccount(accountId).subscribe({
       next: (account) => {
         this.account = account;
-        this.loading = false;
+        // Load reward balance
+        this.loadRewardBalance(accountId);
       },
       error: (error) => {
         console.error('Failed to load account', error);
@@ -77,45 +86,33 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Navigate to transfer page
+   * Load reward balance
    */
-  goToTransfer(): void {
-    this.router.navigate(['/transfer']);
+  private loadRewardBalance(accountId: number): void {
+    this.rewardService.getRewardBalance(accountId).subscribe({
+      next: (balance) => {
+        this.rewardBalance = balance;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load reward balance', error);
+        // Don't fail the whole page if rewards fail
+        this.loading = false;
+      }
+    });
   }
 
   /**
-   * Navigate to history page
+   * Go back to dashboard
    */
-  goToHistory(): void {
-    this.router.navigate(['/history']);
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   /**
-   * Navigate to rewards page
-   */
-  goToRewards(): void {
-    this.router.navigate(['/rewards']);
-  }
-
-  /**
-   * Navigate to profile page
-   */
-  goToProfile(): void {
-    this.router.navigate(['/profile']);
-  }
-
-  /**
-   * Logout
-   */
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
-
-  /**
-   * Refresh account data
+   * Refresh profile data
    */
   refresh(): void {
-    this.loadAccount();
+    this.loadProfileData();
   }
 }

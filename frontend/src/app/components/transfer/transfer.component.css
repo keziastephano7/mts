@@ -24,8 +24,9 @@
 }
 
 .from-account {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  color: #333;
 }
 
 .account-icon {
@@ -42,7 +43,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .detail-row:last-child {
@@ -51,20 +52,22 @@
 
 .label {
   font-weight: 500;
-  opacity: 0.9;
+  color: #666;
 }
 
 .value {
   font-weight: bold;
+  color: #333;
 }
 
 .balance {
   font-size: 20px;
-  color: #4caf50;
+  color: #1976d2;
+  font-weight: 600;
 }
 
 .from-account .balance {
-  color: #fff;
+  color: #1976d2;
 }
 
 .transfer-arrow {
@@ -76,24 +79,44 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: #667eea;
+  color: #1976d2;
 }
 
 .transfer-form-card {
   padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
 }
 
 .form-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #e3f2fd;
+  color: #1976d2;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
 }
 
 .full-width {
   width: 100%;
   margin-bottom: 16px;
+}
+
+.full-width ::ng-deep .mat-mdc-form-field-infix {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.full-width ::ng-deep .mdc-notched-outline__leading {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Fix prefix alignment for rupees symbol */
+.full-width ::ng-deep [matPrefix] {
+  margin-right: 4px;
+  align-self: center;
+  display: flex;
+  align-items: center;
 }
 
 .button-group {

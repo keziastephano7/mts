@@ -1,5 +1,8 @@
 <!-- Toolbar -->
 <mat-toolbar color="primary" class="toolbar">
+  <button mat-icon-button (click)="goToDashboard()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
   <span class="toolbar-title">
     <mat-icon>card_giftcard</mat-icon>
     Reward Points
@@ -46,8 +49,8 @@
           <span class="label">points</span>
         </div>
         <div class="reward-info">
-          <p>💡 Earn 1 point for every ₹100 transferred</p>
-          <p>✨ Make transfers and watch your rewards grow!</p>
+          <p>Earn 1 point for every ₹100 transferred</p>
+          <p>Make transfers and watch your rewards grow!</p>
         </div>
       </mat-card-content>
       <mat-card-actions>

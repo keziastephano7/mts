@@ -7,15 +7,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { AuthService } from '../../services/auth.service';
 import { AccountService } from '../../services/account.service';
 import { TransferService } from '../../services/transfer.service';
 import { TransferRequest } from '../../models/transfer-request.model';
 import { Account } from '../../models/account.model';
+import { PaymentResultDialogComponent } from '../dialogs/payment-result-dialog.component';
 
 /**
  * Transfer Component
@@ -32,9 +33,9 @@ import { Account } from '../../models/account.model';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './transfer.component.html',
   styleUrl: './transfer.component.css'
@@ -58,7 +59,7 @@ export class TransferComponent implements OnInit {
     private accountService: AccountService,
     private transferService: TransferService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +73,7 @@ export class TransferComponent implements OnInit {
     const accountId = this.authService.getCurrentAccountId();
 
     if (!accountId) {
-      this.showError('No account found');
+      this.showErrorDialog('No account found');
       this.router.navigate(['/dashboard']);
       return;
     }
@@ -84,7 +85,7 @@ export class TransferComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load account', error);
-        this.showError('Failed to load account details');
+        this.showErrorDialog('Failed to load account details');
         this.loadingAccount = false;
       }
     });
@@ -100,7 +101,7 @@ export class TransferComponent implements OnInit {
     }
 
     if (!this.fromAccount) {
-      this.showError('Account not loaded');
+      this.showErrorDialog('Account not loaded');
       return;
     }
 
@@ -118,20 +119,38 @@ export class TransferComponent implements OnInit {
     this.transferService.transfer(request).subscribe({
       next: (response) => {
         console.log('Transfer successful', response);
-        this.showSuccess(response.message);
+        this.loading = false;
 
-        // Navigate to dashboard after 2 seconds
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 2000);
+        // Calculate reward points earned (1 point per ₹100 rounded down)
+        const rewardPointsEarned = Math.floor(this.amount! / 100);
+
+        // Show payment result dialog with reward info
+        this.dialog.open(PaymentResultDialogComponent, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            success: true,
+            message: response.message,
+            transactionId: response.transactionId,
+            amount: this.amount,
+            rewardPointsEarned: rewardPointsEarned
+          }
+        });
       },
       error: (error) => {
         console.error('Transfer failed', error);
         this.loading = false;
 
-        // Display error message
+        // Display error dialog
         const errorMessage = error.error?.message || 'Transfer failed. Please try again.';
-        this.showError(errorMessage);
+        this.dialog.open(PaymentResultDialogComponent, {
+          width: '500px',
+          disableClose: true,
+          data: {
+            success: false,
+            message: errorMessage
+          }
+        });
       }
     });
   }
@@ -141,22 +160,22 @@ export class TransferComponent implements OnInit {
    */
   validateForm(): boolean {
     if (!this.toAccountId) {
-      this.showError('Please enter destination account ID');
+      this.showErrorDialog('Please enter destination account ID');
       return false;
     }
 
     if (!this.amount || this.amount <= 0) {
-      this.showError('Please enter a valid amount');
+      this.showErrorDialog('Please enter a valid amount');
       return false;
     }
 
     if (this.fromAccount && this.toAccountId === this.fromAccount.id) {
-      this.showError('Cannot transfer to the same account');
+      this.showErrorDialog('Cannot transfer to the same account');
       return false;
     }
 
     if (this.fromAccount && this.amount > this.fromAccount.balance) {
-      this.showError('Insufficient balance');
+      this.showErrorDialog('Insufficient balance');
       return false;
     }
 
@@ -178,22 +197,16 @@ export class TransferComponent implements OnInit {
   }
 
   /**
-   * Show success message
+   * Show error dialog
    */
-  private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 5000,
-      panelClass: ['success-snackbar']
-    });
-  }
-
-  /**
-   * Show error message
-   */
-  private showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 5000,
-      panelClass: ['error-snackbar']
+  private showErrorDialog(message: string): void {
+    this.dialog.open(PaymentResultDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: {
+        success: false,
+        message: message
+      }
     });
   }
 }

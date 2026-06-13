@@ -11,4 +11,7 @@ export interface TransactionLog {
   failureReason?: string;
   idempotencyKey: string;
   createdOn: string;
+  // UI-only optional fields (populated client-side)
+  otherAccountId?: number;
+  otherAccountName?: string;
 }

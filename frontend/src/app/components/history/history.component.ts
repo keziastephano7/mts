@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../services/auth.service';
 import { AccountService } from '../../services/account.service';
+import { Account } from '../../models/account.model';
 import { TransactionLog } from '../../models/transaction-log.model';
 
 /**
@@ -70,7 +71,16 @@ export class HistoryComponent implements OnInit {
         this.transactions = transactions.sort((a, b) => {
           return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
         });
-        this.loading = false;
+          // Enrich each transaction with the other account's id and holder name
+          this.transactions.forEach(tx => {
+            const otherId = this.getOtherAccountId(tx);
+            tx.otherAccountId = otherId;
+            this.accountService.getAccount(otherId).subscribe({
+              next: (acct: Account) => tx.otherAccountName = acct.holderName,
+              error: () => { /* ignore name if lookup fails */ }
+            });
+          });
+          this.loading = false;
       },
       error: (error) => {
         console.error('Failed to load transactions', error);

@@ -63,7 +63,8 @@
           <div class="transaction-info">
             <h3>
               {{ getTransactionType(transaction) === 'SENT' ? 'Sent to' : 'Received from' }}
-              Account #{{ getOtherAccountId(transaction) }}
+              <span *ngIf="transaction.otherAccountName; else showId">{{ transaction.otherAccountName }}</span>
+              <ng-template #showId>Account #{{ transaction.otherAccountId || getOtherAccountId(transaction) }}</ng-template>
             </h3>
             <p class="transaction-date">{{ formatDate(transaction.createdOn) }}</p>
           </div>
@@ -76,7 +77,7 @@
         <div class="transaction-details">
           <div class="detail-item">
             <span class="detail-label">Transaction ID:</span>
-            <span class="detail-value">{{ transaction.id.substring(0, 8) }}...</span>
+            <span class="detail-value">{{ transaction.id }}</span>
           </div>
 
           <div class="detail-item">
